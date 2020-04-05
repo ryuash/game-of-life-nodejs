@@ -1,5 +1,5 @@
-module.exports = (io:any) => {
-  io.on('connection', (socket:any) => {
+const init = (io: any) => {
+  io.on('connection', (socket: any) => {
     console.log(`A socket connection to the server has been made: ${socket.id}`);
     socket.broadcast.emit('joinGame', socket.id);
 
@@ -8,3 +8,5 @@ module.exports = (io:any) => {
     });
   });
 };
+
+export default init;
