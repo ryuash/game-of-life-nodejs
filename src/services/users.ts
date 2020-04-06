@@ -15,20 +15,15 @@ class Users {
   isColorUnique(color: ICellColor): boolean {
     const users: any[] = Object.keys(this.users);
     for (let i = 0; i <= users.length - 1; i += 1) {
-      const user: IUser = users[i];
-      if (user.colorR !== color.colorR) {
-        return true;
-      }
-
-      if (user.colorB !== color.colorB) {
-        return true;
-      }
-
-      if (user.colorG !== color.colorG) {
-        return true;
+      const user: IUser = this.users[users[i]];
+      const colorR = user.colorR === color.colorR;
+      const colorB = user.colorB === color.colorB;
+      const colorC = user.colorG === color.colorG;
+      if (colorR && colorB && colorC) {
+        return false;
       }
     }
-    return false;
+    return true;
   }
 
   generateRandomColor(): ICellColor {
@@ -43,7 +38,6 @@ class Users {
   getColor(): ICellColor {
     let color = this.generateRandomColor();
     let check = this.isColorUnique(color);
-
     while (!check) {
       color = this.generateRandomColor();
       check = this.isColorUnique(color);
@@ -52,14 +46,18 @@ class Users {
     return color;
   }
 
-  setUser(socketId: string): void {
-    if (!this.users[socketId]) {
-      const color = this.generateRandomColor();
-      this.users[socketId] = {
+  setUser(socketId: string): IUser {
+    let user: any = this.users[socketId];
+    if (!user) {
+      const color = this.getColor();
+      user = {
         socketId,
         ...color,
       };
+      this.users[socketId] = user;
     }
+
+    return user;
   }
 
   removeUser(socketId: string): void {
