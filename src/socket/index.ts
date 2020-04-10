@@ -24,7 +24,7 @@ const init = (io: any, users: any, gameOfLife: any): void => {
 
   io.on(EVENTS.CONNECTION, (socket: any) => {
     socket.on(EVENTS.USER_REENTER_GAME, (oldSocketId: string) => {
-      const newUser = users.resetUser(oldSocketId, socket.id);
+      const newUser = users.reconnectUser(oldSocketId, socket.id);
       socket.broadcast.emit(EVENTS.USER_JOIN, newUser);
       socket.emit(EVENTS.GET_SELF, newUser);
       socket.emit(EVENTS.GET_ALL_USERS, users.getAllConnectedUsers());
@@ -68,7 +68,6 @@ const init = (io: any, users: any, gameOfLife: any): void => {
           }
         }, 30000);
       }
-
       if (users.getCountOfConnectedUsers() === 0) {
         gameOfLife.setInitialBoard();
       }

@@ -190,5 +190,44 @@ describe('gameOfLife tests', () => {
       gameOfLife.updateBoard(data);
       expect(gameOfLife.board[0][1]).to.have.property('colorR').to.eql(13);
     });
+
+    it('should be able to handle multiple updates', () => {
+      const color: ICellColor = {
+        colorR: 3,
+        colorB: 20,
+        colorG: 21,
+      };
+
+      const board: ICell[][] = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+      ];
+
+      const data = [
+        {
+          col: 0,
+          row: 1,
+          color,
+        },
+        {
+          col: 1,
+          row: 1,
+          color,
+        },
+        {
+          col: 2,
+          row: 1,
+          color,
+        },
+      ];
+      gameOfLife.board = board;
+      gameOfLife.updateBoard(data);
+      expect(gameOfLife.board[0][1]).to.not.eql(0);
+      expect(gameOfLife.board[1][1]).to.not.eql(0);
+      expect(gameOfLife.board[2][1]).to.not.eql(0);
+      expect(gameOfLife.board[0][1]).to.have.property('colorR').to.eql(3);
+      expect(gameOfLife.board[1][1]).to.have.property('colorG').to.eql(21);
+    });
   });
 });
