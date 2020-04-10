@@ -1,5 +1,3 @@
-import { IUser } from '@src/types/usersType';
-
 const EVENTS = {
   CONNECTION: 'connection',
   DISCONNECT: 'disconnect',
@@ -11,6 +9,7 @@ const EVENTS = {
   BOARD_UPDATE: 'boardUpdate',
   GET_SELF: 'getSelf',
   USER_ENTER_GAME: 'userEnterGame',
+  USER_REENTER_GAME: 'userReenterGame',
   ERROR: 'error',
 };
 
@@ -24,9 +23,16 @@ const init = (io: any, users: any, gameOfLife: any): void => {
   }, 5000);
 
   io.on(EVENTS.CONNECTION, (socket: any) => {
+    socket.on(EVENTS.USER_REENTER_GAME, (oldSocketId: string) => {
+      const newUser = users.resetUser(oldSocketId, socket.id);
+      socket.broadcast.emit(EVENTS.USER_JOIN, newUser);
+      socket.emit(EVENTS.GET_SELF, newUser);
+      socket.emit(EVENTS.GET_ALL_USERS, users.getAllConnectedUsers());
+      socket.emit(EVENTS.GET_CURRENT_BOARD, gameOfLife.board);
+    });
+
     socket.on(EVENTS.USER_ENTER_GAME, (username = 'Shy Guy') => {
       const newUser = users.setUser(socket.id, username);
-
       socket.broadcast.emit(EVENTS.USER_JOIN, newUser);
       socket.emit(EVENTS.GET_SELF, newUser);
       socket.emit(EVENTS.GET_ALL_USERS, users.getAllConnectedUsers());

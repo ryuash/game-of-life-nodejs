@@ -1,3 +1,4 @@
+import * as R from 'ramda';
 import {
   ICellColor,
 } from '../types/gameOfLifeTypes';
@@ -50,19 +51,26 @@ class Users {
     return color;
   }
 
-  setUser(socketId: string, username: string): IUser {
-    let user: any = this.users[socketId];
+  reconnectUser(oldSocketId: string, newSocketId: string): IUser {
+    const user = R.clone(this.users[oldSocketId]);
     if (user) {
       user.isConnected = true;
+      user.socketId = newSocketId;
+      this.users[newSocketId] = user;
     } else {
-      const color = this.getColor();
-      user = {
-        isConnected: true,
-        socketId,
-        username,
-        ...color,
-      };
+      return this.setUser(newSocketId);
     }
+    return user;
+  }
+
+  setUser(socketId: string, username = 'Shy Guy'): IUser {
+    const color = this.getColor();
+    const user = {
+      isConnected: true,
+      socketId,
+      username,
+      ...color,
+    };
     this.users[socketId] = user;
     return user;
   }
