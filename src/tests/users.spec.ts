@@ -13,24 +13,21 @@ describe('users test', () => {
   describe('setUser test', () => {
     it('should correctly set the user', () => {
       const socketId = '1';
-      let newUser = users.setUser(socketId);
+      const newUser = users.setUser(socketId);
 
       expect(newUser).to.have.property('colorR');
+    });
+  });
 
-      let temp = R.clone(newUser);
-
-      newUser = users.setUser(socketId);
-      expect(newUser).to.eql(temp);
-
-      users.users[socketId].isConnected = false;
-
-      temp = R.clone(newUser);
-      newUser = users.setUser(socketId);
-      expect(newUser.isConnected).to.eql(true);
-      expect(temp.isConnected).to.eql(false);
-      delete temp.isConnected;
-      delete newUser.isConnected;
-      expect(newUser).to.eql(temp);
+  describe('resetUser', () => {
+    it('should copy existing user based on socketid', () => {
+      const socketId = '1';
+      const user = users.setUser(socketId);
+      const socketIdTwo = '2';
+      const newUser = users.resetUser(socketId, socketIdTwo);
+      delete user.socketId;
+      delete newUser.socketId;
+      expect(user).to.eql(newUser);
     });
   });
 

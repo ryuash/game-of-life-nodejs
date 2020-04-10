@@ -11,6 +11,7 @@ const EVENTS = {
   BOARD_UPDATE: 'boardUpdate',
   GET_SELF: 'getSelf',
   USER_ENTER_GAME: 'userEnterGame',
+  USER_REENTER_GAME: 'userReenterGame',
   ERROR: 'error',
 };
 
@@ -28,6 +29,14 @@ const init = (io: any, users: any, gameOfLife: any): void => {
       console.log(socket.id, 'socket id on enter game');
       const newUser = users.setUser(socket.id, username);
 
+      socket.broadcast.emit(EVENTS.USER_JOIN, newUser);
+      socket.emit(EVENTS.GET_SELF, newUser);
+      socket.emit(EVENTS.GET_ALL_USERS, users.getAllConnectedUsers());
+      socket.emit(EVENTS.GET_CURRENT_BOARD, gameOfLife.board);
+    });
+
+    socket.on(EVENTS.USER_REENTER_GAME, (oldSocketId: string) => {
+      const newUser = users.resetUser(oldSocketId, socket.id);
       socket.broadcast.emit(EVENTS.USER_JOIN, newUser);
       socket.emit(EVENTS.GET_SELF, newUser);
       socket.emit(EVENTS.GET_ALL_USERS, users.getAllConnectedUsers());
