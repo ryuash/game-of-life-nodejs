@@ -80,6 +80,19 @@ class Users {
     }
   }
 
+  getAllConnectedUsers(): {} {
+    const userKeys = Object.keys(this.users);
+    const connectedUsers: any = {};
+    userKeys.forEach((x: string) => {
+      const user = this.users[x];
+      if (user.isConnected) {
+        connectedUsers[x] = user;
+      }
+    });
+
+    return connectedUsers;
+  }
+
   getCountOfConnectedUsers(): number {
     const userKeys = Object.keys(this.users);
     let count = 0;
