@@ -52,6 +52,7 @@ class Users {
 
   setUser(socketId: string, username: string): IUser {
     let user: any = this.users[socketId];
+    console.log(user, 'does user exist');
     if (user) {
       user.isConnected = true;
     } else {
