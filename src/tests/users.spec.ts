@@ -1,5 +1,6 @@
 /* eslint no-undef: "warn" */
 import { expect } from 'chai';
+import * as R from 'ramda';
 import Users from '../services/users';
 
 let users: any = null;
@@ -16,10 +17,20 @@ describe('users test', () => {
 
       expect(newUser).to.have.property('colorR');
 
-      const temp = newUser.colorR;
+      let temp = R.clone(newUser);
 
       newUser = users.setUser(socketId);
-      expect(newUser).to.have.property('colorR').to.eql(temp);
+      expect(newUser).to.eql(temp);
+
+      users.users[socketId].isConnected = false;
+
+      temp = R.clone(newUser);
+      newUser = users.setUser(socketId);
+      expect(newUser.isConnected).to.eql(true);
+      expect(temp.isConnected).to.eql(false);
+      delete temp.isConnected;
+      delete newUser.isConnected;
+      expect(newUser).to.eql(temp);
     });
   });
 
