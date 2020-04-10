@@ -51,6 +51,8 @@ class Users {
   }
 
   setUser(socketId: string, username: string): IUser {
+    console.log(this.users, 'users in set users');
+    console.log(socketId, 'socket id in set user');
     let user: any = this.users[socketId];
     console.log(user, 'does user exist');
     if (user) {

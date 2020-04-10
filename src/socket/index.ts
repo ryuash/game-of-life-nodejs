@@ -25,6 +25,7 @@ const init = (io: any, users: any, gameOfLife: any): void => {
 
   io.on(EVENTS.CONNECTION, (socket: any) => {
     socket.on(EVENTS.USER_ENTER_GAME, (username = 'Shy Guy') => {
+      console.log(socket.id, 'socket id on enter game');
       const newUser = users.setUser(socket.id, username);
 
       socket.broadcast.emit(EVENTS.USER_JOIN, newUser);
@@ -52,7 +53,9 @@ const init = (io: any, users: any, gameOfLife: any): void => {
 
 
     socket.on(EVENTS.DISCONNECT, () => {
+      console.log('user disconnected');
       const user = users.users[socket.id];
+      console.log(user, 'user in disconnect');
       if (user) {
         users.disconnectUser(socket.id);
         socket.broadcast.emit(EVENTS.USER_LEFT, socket.id);
