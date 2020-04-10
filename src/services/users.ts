@@ -13,6 +13,10 @@ class Users {
   }
 
   isColorUnique(color: ICellColor): boolean {
+    if (color.colorR === 255 && color.colorB === 255 && color.colorG === 255) {
+      return false;
+    }
+
     const users: any[] = Object.keys(this.users);
     for (let i = 0; i <= users.length - 1; i += 1) {
       const user: IUser = this.users[users[i]];
@@ -27,7 +31,7 @@ class Users {
   }
 
   generateRandomColor(): ICellColor {
-    const max = 225;
+    const max = 255;
     return {
       colorR: Math.floor(Math.random() * max),
       colorB: Math.floor(Math.random() * max),
@@ -46,22 +50,46 @@ class Users {
     return color;
   }
 
-  setUser(socketId: string): IUser {
+  setUser(socketId: string, username: string): IUser {
     let user: any = this.users[socketId];
-    if (!user) {
+    if (user) {
+      user.isConnected = true;
+    } else {
       const color = this.getColor();
       user = {
+        isConnected: true,
         socketId,
+        username,
         ...color,
       };
-      this.users[socketId] = user;
     }
-
+    this.users[socketId] = user;
     return user;
   }
 
+  disconnectUser(socketId: string): void {
+    if (this.users[socketId]) {
+      this.users[socketId].isConnected = false;
+    }
+  }
+
   removeUser(socketId: string): void {
-    delete this.users[socketId];
+    const user = this.users[socketId];
+    if (user) {
+      delete this.users[socketId];
+    }
+  }
+
+  getCountOfConnectedUsers(): number {
+    const userKeys = Object.keys(this.users);
+    let count = 0;
+    userKeys.forEach((x: string) => {
+      const user = this.users[x];
+      if (user.isConnected) {
+        count += 1;
+      }
+    });
+    return count;
   }
 }
 

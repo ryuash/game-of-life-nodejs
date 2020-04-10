@@ -11,12 +11,10 @@ class GameOfLife {
   columns: number;
 
   constructor() {
-    this.rows = 20;
-    this.columns = 20;
     this.board = [];
   }
 
-  setInitialBoard(row: number, col: number): void {
+  setInitialBoard(row = 10, col = 10): void {
     const newBoard: ICell[][] = Array.from(Array(row), () => (
       Array.from(Array(col), () => 0)
     ));
@@ -24,7 +22,7 @@ class GameOfLife {
     this.board = newBoard;
   }
 
-  getNeighbors(board: ICell[][], currentCol: number, currentRow: number): IAliveCell[] {
+  getNeighbors(currentCol: number, currentRow: number): IAliveCell[] {
     const topCol = currentCol - 1;
     const bottomCol = currentCol + 1;
     const leftRow = currentRow - 1;
@@ -32,11 +30,11 @@ class GameOfLife {
     const neighbors: IAliveCell | any[] = [];
 
     for (let col = topCol; col <= bottomCol; col += 1) {
-      if (board[col]) {
+      if (this.board[col]) {
         for (let row = leftRow; row <= rightRow; row += 1) {
           const notCurrentCell = col !== currentCol || row !== currentRow;
-          if (board[col][row] && notCurrentCell) {
-            neighbors.push(board[col][row]);
+          if (this.board[col][row] && notCurrentCell) {
+            neighbors.push(this.board[col][row]);
           }
         }
       }
@@ -59,12 +57,12 @@ class GameOfLife {
     return true;
   }
 
-  updateBoard(board: ICell[][], data: IUpdateBoard[]): ICell[][] {
+  updateBoard(data: IUpdateBoard[]): void {
     const newBoard: ICell[][] = [];
-    for (let currentCol = 0; currentCol <= board.length - 1; currentCol += 1) {
+    for (let currentCol = 0; currentCol <= this.board.length - 1; currentCol += 1) {
       const newRow: ICell[] = [];
-      for (let currentRow = 0; currentRow <= board[currentCol].length - 1; currentRow += 1) {
-        newRow.push(board[currentCol][currentRow]);
+      for (let currentRow = 0; currentRow <= this.board[currentCol].length - 1; currentRow += 1) {
+        newRow.push(this.board[currentCol][currentRow]);
       }
       newBoard.push(newRow);
     }
@@ -84,8 +82,7 @@ class GameOfLife {
       }
       newBoard[col][row] = newCell;
     }
-
-    return newBoard;
+    this.board = newBoard;
   }
 
   newCellColor(neighbors: IAliveCell[]): ICellColor {
@@ -113,14 +110,14 @@ class GameOfLife {
     };
   }
 
-  generateNextGeneration(board: ICell[][]): ICell[][] {
+  generateNextGeneration(): void {
     const nextGeneration: ICell[][] = [];
 
-    for (let col = 0; col <= board.length - 1; col += 1) {
+    for (let col = 0; col <= this.board.length - 1; col += 1) {
       const newRow: ICell[] = [];
-      for (let row = 0; row <= board[col].length - 1; row += 1) {
-        const currentCell = board[col][row];
-        const neighbors: IAliveCell[] = this.getNeighbors(board, col, row);
+      for (let row = 0; row <= this.board[col].length - 1; row += 1) {
+        const currentCell = this.board[col][row];
+        const neighbors: IAliveCell[] = this.getNeighbors(col, row);
         let newCell: ICell | 0 = 0;
 
         if (currentCell && (neighbors.length >= 2 && neighbors.length <= 3)) {
@@ -138,7 +135,7 @@ class GameOfLife {
       }
       nextGeneration.push(newRow);
     }
-    return nextGeneration;
+    this.board = nextGeneration;
   }
 }
 
