@@ -1,3 +1,8 @@
+import {
+  IBoardClick,
+  IUpdateBoard,
+} from '@src/types/gameOfLifeTypes';
+
 const EVENTS = {
   CONNECTION: 'connection',
   DISCONNECT: 'disconnect',
@@ -39,18 +44,25 @@ const init = (io: any, users: any, gameOfLife: any): void => {
       socket.emit(EVENTS.GET_CURRENT_BOARD, gameOfLife.board);
     });
 
-    socket.on(EVENTS.CLICK_BOARD, (col: number, row: number) => {
+    socket.on(EVENTS.CLICK_BOARD, (data: IBoardClick[]) => {
       const user = users.users[socket.id];
       const { colorR, colorB, colorG } = user;
-      const formatData = [{
-        row,
-        col,
-        color: {
-          colorR,
-          colorB,
-          colorG,
-        },
-      }];
+      const formatData: IUpdateBoard[] = [];
+      data.forEach((x: IBoardClick) => {
+        const {
+          row,
+          col,
+        } = x;
+        formatData.push({
+          row,
+          col,
+          color: {
+            colorR,
+            colorB,
+            colorG,
+          },
+        });
+      });
 
       gameOfLife.updateBoard(formatData);
       socket.broadcast.emit(EVENTS.BOARD_UPDATE, gameOfLife.board);

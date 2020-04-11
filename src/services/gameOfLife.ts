@@ -14,7 +14,7 @@ class GameOfLife {
     this.board = [];
   }
 
-  setInitialBoard(row = 10, col = 10): void {
+  setInitialBoard(row = 30, col = 30): void {
     const newBoard: ICell[][] = Array.from(Array(row), () => (
       Array.from(Array(col), () => 0)
     ));

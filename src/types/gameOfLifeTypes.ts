@@ -15,3 +15,8 @@ export interface IUpdateBoard {
 }
 
 export type ICell = IAliveCell | 0;
+
+export interface IBoardClick {
+  col: number;
+  row: number;
+}
