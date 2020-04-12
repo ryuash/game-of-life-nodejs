@@ -78,7 +78,7 @@ const init = (io: any, users: any, gameOfLife: any): void => {
           if (!user.isConnected) {
             users.removeUser(socket.id);
           }
-        }, 30000);
+        }, 60000);
       }
       if (users.getCountOfConnectedUsers() === 0) {
         gameOfLife.setInitialBoard();
