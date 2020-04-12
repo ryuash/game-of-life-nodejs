@@ -11,7 +11,8 @@ class GameOfLife {
   columns: number;
 
   constructor() {
-    this.board = [];
+    this.board = null;
+    this.setInitialBoard();
   }
 
   setInitialBoard(row = 30, col = 30): void {
@@ -27,7 +28,7 @@ class GameOfLife {
     const bottomCol = currentCol + 1;
     const leftRow = currentRow - 1;
     const rightRow = currentRow + 1;
-    const neighbors: IAliveCell | any[] = [];
+    const neighbors: IAliveCell | any = [];
 
     for (let col = topCol; col <= bottomCol; col += 1) {
       if (this.board[col]) {

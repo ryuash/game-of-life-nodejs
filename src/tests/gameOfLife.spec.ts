@@ -34,6 +34,11 @@ describe('gameOfLife tests', () => {
   beforeEach(() => {
     gameOfLife = new GameOfLife();
   });
+  describe('gameOfLife init', () => {
+    it('board should not be null', () => {
+      expect(gameOfLife.board).to.not.eql(null);
+    });
+  });
   describe('newCellColor test', () => {
     it('should return correct average of neighbor\'s colors', () => {
       const neighbors: IAliveCell[] = [
